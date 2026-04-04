@@ -31,8 +31,38 @@ export interface GitHubRepo {
   created_at: string;
   updated_at: string;
   pushed_at: string;
+  default_branch?: string;
+  owner?: {
+    login: string;
+    avatar_url: string;
+  };
 }
 
 export interface LanguageStats {
   [language: string]: number;
+}
+
+export interface GitHubContent {
+  name: string;
+  path: string;
+  sha: string;
+  size: number;
+  type: "file" | "dir" | "symlink" | "submodule";
+  html_url: string;
+  download_url: string | null;
+}
+
+export interface GitHubBranch {
+  name: string;
+  commit: {
+    sha: string;
+    url: string;
+  };
+  protected: boolean;
+}
+
+export interface GitHubSearchResult {
+  total_count: number;
+  incomplete_results: boolean;
+  items: GitHubRepo[];
 }

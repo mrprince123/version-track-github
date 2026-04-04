@@ -6,6 +6,7 @@ import { StatsCard } from "@/components/StatsCard";
 import { RepoCard } from "@/components/RepoCard";
 import { LanguageChart } from "@/components/LangaugeChart";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import AnimatedBackground from "@/components/AnimatedBackground";
 import { Star, GitFork, BookOpen, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -46,53 +47,71 @@ const UserDetails = () => {
 
   if (userLoading || statsLoading || languagesLoading || reposLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <LoadingSpinner />
+      <div className="min-h-[calc(100vh-73px)] relative">
+        <AnimatedBackground />
+        <div className="relative z-10 container mx-auto px-4 py-8">
+          <LoadingSpinner />
+        </div>
       </div>
     );
   }
 
   if (!user || !stats) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center space-y-4">
-          <h2 className="text-2xl font-bold text-foreground">User not found</h2>
-          <Link to="/">
-            <Button>Back to Search</Button>
-          </Link>
+      <div className="min-h-[calc(100vh-73px)] relative">
+        <AnimatedBackground />
+        <div className="relative z-10 container mx-auto px-4 py-8">
+          <div className="text-center space-y-4 py-20">
+            <h2 className="text-3xl font-bold text-foreground">User not found</h2>
+            <p className="text-muted-foreground">The username "{username}" doesn't exist on GitHub.</p>
+            <Link to="/">
+              <Button className="gradient-primary rounded-xl">Back to Search</Button>
+            </Link>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-8">
-      <ProfileCard user={user} />
+    <div className="min-h-[calc(100vh-73px)] relative">
+      <AnimatedBackground />
 
-      <div className="grid md:grid-cols-3 gap-6">
-        <StatsCard title="Total Stars" value={stats.totalStars} icon={Star} />
-        <StatsCard title="Total Forks" value={stats.totalForks} icon={GitFork} />
-        <StatsCard title="Public Repos" value={user.public_repos} icon={BookOpen} />
-      </div>
+      <div className="relative z-10 container mx-auto px-4 py-8 space-y-8">
+        {/* Profile */}
+        <ProfileCard user={user} />
 
-      {languages && Object.keys(languages).length > 0 && (
-        <LanguageChart stats={languages} />
-      )}
-
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-3xl font-bold text-foreground">Top Repositories</h2>
-          <Link to={`/user/${username}/repos`}>
-            <Button variant="outline" className="gap-2">
-              View All <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
+        {/* Stats */}
+        <div className="grid md:grid-cols-3 gap-5 animate-fade-in-up animation-delay-200">
+          <StatsCard title="Total Stars" value={stats.totalStars} icon={Star} color="text-yellow-400" />
+          <StatsCard title="Total Forks" value={stats.totalForks} icon={GitFork} color="text-blue-400" />
+          <StatsCard title="Public Repos" value={user.public_repos} icon={BookOpen} color="text-emerald-400" />
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {topRepos?.map((repo) => (
-            <RepoCard key={repo.id} repo={repo} username={username} />
-          ))}
+        {/* Languages */}
+        {languages && Object.keys(languages).length > 0 && (
+          <LanguageChart stats={languages} />
+        )}
+
+        {/* Top Repos */}
+        <div className="space-y-6 animate-fade-in-up animation-delay-300">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground">Top Repositories</h2>
+            <Link to={`/user/${username}/repos`}>
+              <Button
+                variant="outline"
+                className="gap-2 glass border-white/[0.1] hover:bg-white/[0.05] rounded-xl"
+              >
+                View All <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {topRepos?.map((repo) => (
+              <RepoCard key={repo.id} repo={repo} username={username} />
+            ))}
+          </div>
         </div>
       </div>
     </div>

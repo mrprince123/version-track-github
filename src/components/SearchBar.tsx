@@ -1,39 +1,46 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 interface SearchBarProps {
-  onSearch: (username: string) => void;
+  onSearch: (query: string) => void;
   placeholder?: string;
   className?: string;
+  buttonLabel?: string;
 }
 
-export const SearchBar = ({ onSearch, placeholder = "Enter GitHub username...", className = "" }: SearchBarProps) => {
-  const [username, setUsername] = useState("");
+export const SearchBar = ({
+  onSearch,
+  placeholder = "Enter GitHub username...",
+  className = "",
+  buttonLabel = "Search",
+}: SearchBarProps) => {
+  const [query, setQuery] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (username.trim()) {
-      onSearch(username.trim());
+    if (query.trim()) {
+      onSearch(query.trim());
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className={`flex gap-3 ${className}`}>
-      <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-        <Input
+    <form onSubmit={handleSubmit} className={`flex items-center gap-3 ${className}`}>
+      <div className="relative flex-1 group">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-smooth" />
+        <input
           type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
           placeholder={placeholder}
-          className="pl-10 h-12 bg-card border-border text-foreground"
+          className="w-full h-12 pl-12 pr-4 text-base rounded-xl glass-card text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/40 transition-smooth border border-white/[0.08] bg-white/[0.03]"
         />
       </div>
-      <Button type="submit" className="h-12 px-8 gradient-primary hover:opacity-90 transition-smooth">
-        Search
-      </Button>
+      <button
+        type="submit"
+        className="h-12 px-8 rounded-xl gradient-primary text-white hover:opacity-90 transition-smooth font-semibold text-base shadow-glow hover:shadow-glow-strong shrink-0"
+      >
+        {buttonLabel}
+      </button>
     </form>
   );
 };
