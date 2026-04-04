@@ -34,9 +34,10 @@ const LANGUAGE_COLORS: Record<string, string> = {
 interface RepoCardProps {
   repo: GitHubRepo;
   username?: string;
+  index?: number;
 }
 
-export const RepoCard = ({ repo, username }: RepoCardProps) => {
+export const RepoCard = ({ repo, username, index = 0 }: RepoCardProps) => {
   const navigate = useNavigate();
   const owner = username || repo.owner?.login || repo.full_name.split("/")[0];
 
@@ -53,7 +54,8 @@ export const RepoCard = ({ repo, username }: RepoCardProps) => {
   return (
     <div
       onClick={handleClick}
-      className="group glass-card rounded-xl p-5 cursor-pointer transition-smooth hover:shadow-glow hover:scale-[1.02] gradient-border"
+      className="group glass-card rounded-xl p-5 cursor-pointer transition-smooth hover:shadow-glow hover:scale-[1.02] gradient-border animate-fade-in-up"
+      style={{ animationDelay: `${index * 100}ms` }}
     >
       <div className="space-y-3">
         {/* Title + Language */}

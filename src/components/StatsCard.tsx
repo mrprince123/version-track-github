@@ -1,11 +1,13 @@
 import { LucideIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface StatsCardProps {
   title: string;
   value: number | string;
   icon: LucideIcon;
   color?: string;
+  className?: string;
 }
 
 export const StatsCard = ({
@@ -13,6 +15,7 @@ export const StatsCard = ({
   value,
   icon: Icon,
   color = "text-primary",
+  className,
 }: StatsCardProps) => {
   const [displayValue, setDisplayValue] = useState(0);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -38,7 +41,10 @@ export const StatsCard = ({
   }, [value]);
 
   return (
-    <div className="glass-card rounded-xl p-5 transition-smooth hover:shadow-glow hover:scale-[1.03] gradient-border group">
+    <div className={cn(
+      "glass-card rounded-xl p-5 transition-smooth hover:shadow-glow hover:scale-[1.03] gradient-border group",
+      className
+    )}>
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm text-muted-foreground mb-1">{title}</p>

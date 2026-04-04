@@ -66,3 +66,56 @@ export interface GitHubSearchResult {
   incomplete_results: boolean;
   items: GitHubRepo[];
 }
+
+export interface GitHubEvent {
+  id: string;
+  type: string;
+  actor: {
+    id: number;
+    login: string;
+    avatar_url: string;
+  };
+  repo: {
+    id: number;
+    name: string;
+    url: string;
+  };
+  payload: {
+    action?: string;
+    commits?: Array<{
+      sha: string;
+      message: string;
+      author: {
+        email: string;
+        name: string;
+      };
+    }>;
+    ref?: string;
+    ref_type?: string;
+    issue?: {
+      number: number;
+      title: string;
+      html_url: string;
+    };
+    pull_request?: {
+      number: number;
+      title: string;
+      html_url: string;
+    };
+  };
+  created_at: string;
+}
+
+export interface GitHubOrg {
+  login: string;
+  id: number;
+  url: string;
+  repos_url: string;
+  events_url: string;
+  hooks_url: string;
+  issues_url: string;
+  members_url: string;
+  public_members_url: string;
+  avatar_url: string;
+  description: string | null;
+}
