@@ -2,7 +2,9 @@ import { useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { githubApi } from "@/services/github";
+import { Skeleton } from "@/components/ui/skeleton";
 import { RepoCard } from "@/components/RepoCard";
+import { RepoCardSkeleton } from "@/components/RepoCardSkeleton";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import { Button } from "@/components/ui/button";
@@ -42,8 +44,20 @@ const Repositories = () => {
     return (
       <div className="min-h-[calc(100vh-73px)] relative">
         <AnimatedBackground />
-        <div className="relative z-10 container mx-auto px-4 py-8">
-          <LoadingSpinner />
+        <div className="relative z-10 container mx-auto px-4 py-8 space-y-6">
+          <div className="flex items-center gap-4 animate-fade-in-up">
+            <Skeleton className="h-10 w-10 rounded-xl" />
+            <Skeleton className="h-10 w-64" />
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Skeleton className="h-9 w-64 rounded-lg" />
+            <Skeleton className="h-9 w-32 rounded-lg" />
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[...Array(9)].map((_, i) => (
+              <RepoCardSkeleton key={i} index={i} />
+            ))}
+          </div>
         </div>
       </div>
     );

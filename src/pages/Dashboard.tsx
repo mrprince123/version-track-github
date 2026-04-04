@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { githubApi } from "@/services/github";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { Skeleton } from "@/components/ui/skeleton";
+import { RepoCardSkeleton } from "@/components/RepoCardSkeleton";
 import {
   TrendingUp,
   Star,
@@ -214,7 +216,11 @@ const Dashboard = () => {
               </div>
 
               {trendingLoading ? (
-                <LoadingSpinner />
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {[...Array(6)].map((_, i) => (
+                    <RepoCardSkeleton key={i} index={i} />
+                  ))}
+                </div>
               ) : (
                 <div className="grid sm:grid-cols-2 gap-4">
                   {trendingRepos?.items?.slice(0, 6).map((repo) => (
@@ -276,7 +282,18 @@ const Dashboard = () => {
               </h2>
 
               {recentLoading ? (
-                <LoadingSpinner />
+                <div className="space-y-3">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="w-full glass-card rounded-xl p-4 flex items-center gap-4 border border-white/5">
+                      <Skeleton className="h-10 w-10 rounded-full shrink-0" />
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-4 w-1/3" />
+                        <Skeleton className="h-3 w-1/2" />
+                      </div>
+                      <Skeleton className="h-14 w-14 rounded-lg shrink-0 ml-auto hidden sm:block" />
+                    </div>
+                  ))}
+                </div>
               ) : (
                 <div className="space-y-3">
                   {recentRepos?.items?.slice(0, 5).map((repo) => (

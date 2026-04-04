@@ -2,33 +2,48 @@ import { useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { githubApi } from "@/services/github";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ProfileCard } from "@/components/ProfileCard";
+import { ProfileCardSkeleton } from "@/components/ProfileCardSkeleton";
 import { StatsCard } from "@/components/StatsCard";
+import { StatsCardSkeleton } from "@/components/StatsCardSkeleton";
 import { RepoCard } from "@/components/RepoCard";
+import { RepoCardSkeleton } from "@/components/RepoCardSkeleton";
 import { LanguageChart } from "@/components/LangaugeChart";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { ActivityFeed } from "@/components/ActivityFeed";
+import { ActivityFeedSkeleton } from "@/components/ActivityFeedSkeleton";
 import { OrganizationList } from "@/components/OrganizationList";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import {
   Star,
   GitFork,
   BookOpen,
-  ArrowRight,
   LayoutGrid,
   Activity,
-  Users,
   Building2,
-  Calendar,
-  Search,
   ChevronRight,
+  Search,
+  SlidersHorizontal,
+  X,
+  History,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 
 const UserDetails = () => {
   const { username } = useParams<{ username: string }>();
   const [activeTab, setActiveTab] = useState<"overview" | "activity" | "organizations">("overview");
+  const [repoSearch, setRepoSearch] = useState("");
+  const [repoSort, setRepoSort] = useState("stars");
 
   const { data: user, isLoading: userLoading, error: userError } = useQuery({
     queryKey: ["user", username],
@@ -50,10 +65,7 @@ const UserDetails = () => {
 
   const { data: topRepos, isLoading: reposLoading } = useQuery({
     queryKey: ["topRepos", username],
-    queryFn: async () => {
-      const repos = await githubApi.getRepos(username!, 1, 6);
-      return repos.sort((a, b) => b.stargazers_count - a.stargazers_count).slice(0, 6);
-    },
+    queryFn: () => githubApi.getRepos(username!, 1, 30), // Get more for filtering
     enabled: !!username,
   });
 
@@ -69,6 +81,30 @@ const UserDetails = () => {
     enabled: !!username,
   });
 
+  const filteredRepos = useMemo(() => {
+    if (!topRepos) return [];
+    
+    let result = [...topRepos];
+    
+    // Filter
+    if (repoSearch) {
+      result = result.filter(repo => 
+        repo.name.toLowerCase().includes(repoSearch.toLowerCase()) ||
+        repo.description?.toLowerCase().includes(repoSearch.toLowerCase())
+      );
+    }
+    
+    // Sort
+    result.sort((a, b) => {
+      if (repoSort === "stars") return b.stargazers_count - a.stargazers_count;
+      if (repoSort === "forks") return b.forks_count - a.forks_count;
+      if (repoSort === "updated") return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+      return 0;
+    });
+    
+    return result.slice(0, 6); // Keep top 6 after filter/sort
+  }, [topRepos, repoSearch, repoSort]);
+
   const isLoading = userLoading || statsLoading || languagesLoading || reposLoading || eventsLoading || orgsLoading;
 
   if (userError) {
@@ -77,13 +113,57 @@ const UserDetails = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-[calc(100vh-73px)] relative">
+      <div className="min-h-[calc(100vh-73px)] relative overflow-x-hidden">
         <AnimatedBackground />
-        <div className="relative z-10 container mx-auto px-4 py-32 flex flex-col items-center justify-center">
-          <LoadingSpinner />
-          <p className="mt-4 text-muted-foreground animate-pulse font-medium tracking-wide">
-            Fetching developer intelligence...
-          </p>
+        
+        {/* Breadcrumbs Skeleton */}
+        <div className="relative z-10 container mx-auto px-4 pt-8">
+          <div className="flex items-center gap-2 mb-6">
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="h-3 w-3" />
+            <Skeleton className="h-3 w-24" />
+            <Skeleton className="h-3 w-3" />
+            <Skeleton className="h-3 w-20" />
+          </div>
+        </div>
+
+        <div className="relative z-10 container mx-auto px-4 pb-16">
+          <div className="grid lg:grid-cols-[380px,1fr] gap-8">
+            {/* Sidebar Skeleton */}
+            <div className="space-y-6">
+              <ProfileCardSkeleton />
+            </div>
+
+            {/* Content Skeleton */}
+            <div className="space-y-8">
+              {/* Stats Grid Skeleton */}
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {[1, 2, 3, 4].map((i) => (
+                  <StatsCardSkeleton key={i} />
+                ))}
+              </div>
+
+              {/* Tabs Skeleton */}
+              <div className="flex items-center gap-2 border-b border-white/5 pb-4">
+                {[1, 2, 3].map((i) => (
+                  <Skeleton key={i} className="h-10 w-28 rounded-xl" />
+                ))}
+              </div>
+
+              {/* Major Content Skeleton (Repo Grid) */}
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <Skeleton className="h-6 w-48" />
+                  <Skeleton className="h-10 w-32 rounded-xl" />
+                </div>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {[1, 2, 3, 4, 5, 6].map((i) => (
+                    <RepoCardSkeleton key={i} index={i} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -100,7 +180,7 @@ const UserDetails = () => {
             </div>
             <h2 className="text-3xl font-black text-foreground">User Not Found</h2>
             <p className="text-muted-foreground max-w-sm mx-auto">
-              We couldn't find a GitHub profile for <span className="text-primary font-bold">"{username}"</span>.
+              No intelligence matched for identity <span className="text-primary font-bold">"{username}"</span>.
             </p>
             <div className="pt-4">
               <Link to="/">
@@ -116,9 +196,9 @@ const UserDetails = () => {
   }
 
   const tabs = [
-    { id: "overview", label: "Overview", icon: LayoutGrid },
-    { id: "activity", label: "Contribution Activity", icon: Activity, count: events?.length },
-    { id: "organizations", label: "Organizations", icon: Building2, count: organizations?.length },
+    { id: "overview", label: "Intelligence", icon: LayoutGrid },
+    { id: "activity", label: "Signals", icon: Activity, count: events?.length },
+    { id: "organizations", label: "Nodes", icon: Building2, count: organizations?.length },
   ];
 
   return (
@@ -127,12 +207,12 @@ const UserDetails = () => {
 
       {/* Breadcrumbs */}
       <div className="relative z-10 container mx-auto px-4 pt-8">
-        <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground/60 mb-6 group">
-          <Link to="/" className="hover:text-primary transition-smooth">Explore</Link>
+        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 mb-6 group">
+          <Link to="/" className="hover:text-primary transition-smooth">Network</Link>
           <ChevronRight className="h-3 w-3" />
-          <span className="text-foreground/80">User Profile</span>
+          <span className="text-foreground/80">Entity Profile</span>
           <ChevronRight className="h-3 w-3" />
-          <span className="text-primary font-bold uppercase tracking-widest">{username}</span>
+          <span className="text-primary glow-text">{username}</span>
         </div>
       </div>
 
@@ -162,7 +242,7 @@ const UserDetails = () => {
                 className="bg-blue-400/5 border-blue-400/10 shadow-[0_8px_20px_hsl(199_89%_48%/0.08)]"
               />
               <StatsCard
-                title="Total Repos"
+                title="Public Repos"
                 value={user.public_repos}
                 icon={BookOpen}
                 color="text-emerald-400"
@@ -176,7 +256,7 @@ const UserDetails = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-smooth ${
+                  className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-smooth ${
                     activeTab === tab.id
                       ? "bg-primary text-white shadow-glow"
                       : "text-muted-foreground hover:text-foreground hover:bg-white/[0.06]"
@@ -203,10 +283,10 @@ const UserDetails = () => {
                   {languages && Object.keys(languages).length > 0 && (
                     <div className="space-y-4">
                       <div className="flex items-center gap-3 ml-1">
-                        <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
+                        <div className="p-2 rounded-lg bg-primary/10 border border-primary/20 shadow-glow">
                           <LayoutGrid className="h-4 w-4 text-primary" />
                         </div>
-                        <h2 className="text-xl font-black text-foreground uppercase tracking-wider">Skill Set</h2>
+                        <h2 className="text-xl font-black text-foreground uppercase tracking-widest glow-text">Expertise Profile</h2>
                       </div>
                       <LanguageChart stats={languages} />
                     </div>
@@ -214,27 +294,72 @@ const UserDetails = () => {
 
                   {/* Top Repos Section */}
                   <div className="space-y-6">
-                    <div className="flex items-center justify-between ml-1 leading-none">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 ml-1 leading-none">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
+                        <div className="p-2 rounded-lg bg-primary/10 border border-primary/20 shadow-glow">
                           <Star className="h-4 w-4 text-primary" />
                         </div>
-                        <h2 className="text-xl font-black text-foreground uppercase tracking-wider">Top Creations</h2>
+                        <h2 className="text-xl font-black text-foreground uppercase tracking-widest glow-text">Primary Nodes</h2>
                       </div>
+                      
+                      {/* Search & Sort Controls */}
+                      <div className="flex items-center gap-3 bg-white/[0.02] border border-white/[0.05] p-1.5 rounded-2xl flex-1 max-w-md">
+                        <div className="relative flex-1 group">
+                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground group-focus-within:text-primary transition-smooth" />
+                          <Input 
+                            placeholder="Filter nodes..." 
+                            value={repoSearch}
+                            onChange={(e) => setRepoSearch(e.target.value)}
+                            className="bg-transparent border-none focus-visible:ring-0 text-xs h-9 pl-9 pr-8"
+                          />
+                          {repoSearch && (
+                            <button 
+                              onClick={() => setRepoSearch("")}
+                              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-white/10 rounded-md transition-smooth"
+                            >
+                              <X className="h-3 w-3 text-muted-foreground" />
+                            </button>
+                          )}
+                        </div>
+                        <div className="w-[1px] h-6 bg-white/[0.08]" />
+                        <Select value={repoSort} onValueChange={setRepoSort}>
+                          <SelectTrigger className="w-[130px] bg-transparent border-none focus:ring-0 text-[10px] font-black uppercase tracking-widest h-9">
+                            <SlidersHorizontal className="h-3 w-3 mr-2 text-primary" />
+                            <SelectValue placeholder="Sort" />
+                          </SelectTrigger>
+                          <SelectContent className="glass-strong border-white/[0.1] rounded-xl overflow-hidden">
+                            <SelectItem value="stars" className="text-[10px] font-bold uppercase tracking-widest">By Stars</SelectItem>
+                            <SelectItem value="forks" className="text-[10px] font-bold uppercase tracking-widest">By Forks</SelectItem>
+                            <SelectItem value="updated" className="text-[10px] font-bold uppercase tracking-widest text-primary">Recently Built</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    {filteredRepos.length > 0 ? (
+                      <div className="grid md:grid-cols-2 gap-5 group/list">
+                        {filteredRepos.map((repo, i) => (
+                          <RepoCard key={repo.id} repo={repo} username={username} index={i} />
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="glass rounded-2xl p-20 text-center border-dashed border-white/[0.05]">
+                        <div className="mb-4 p-4 bg-white/[0.03] rounded-full inline-block">
+                          <History className="h-8 w-8 text-muted-foreground/20" />
+                        </div>
+                        <p className="text-muted-foreground text-sm font-medium">No matching nodes found in this sector.</p>
+                      </div>
+                    )}
+
+                    <div className="flex justify-center pt-4">
                       <Link to={`/user/${username}/repos`}>
                         <Button
                           variant="ghost"
-                          className="gap-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-xl group px-4"
+                          className="gap-3 text-[10px] font-black tracking-widest text-primary hover:bg-primary/5 rounded-2xl group px-8 py-6 h-auto"
                         >
-                          EXPLORE ALL <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-smooth" />
+                          ACCESS COMPLETE REPOSITORY NETWORK <ChevronRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-spring" />
                         </Button>
                       </Link>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-5 group/list">
-                      {topRepos?.map((repo, i) => (
-                        <RepoCard key={repo.id} repo={repo} username={username} index={i} />
-                      ))}
                     </div>
                   </div>
                 </div>
@@ -244,10 +369,10 @@ const UserDetails = () => {
               {activeTab === "activity" && (
                 <div className="space-y-6 animate-fade-in-up">
                   <div className="flex items-center gap-3 ml-1">
-                    <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                    <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
                       <Activity className="h-4 w-4 text-emerald-500" />
                     </div>
-                    <h2 className="text-xl font-black text-foreground uppercase tracking-wider">Recent Signals</h2>
+                    <h2 className="text-xl font-black text-foreground uppercase tracking-widest glow-text">Recent Data Signals</h2>
                   </div>
                   <ActivityFeed events={events || []} />
                 </div>
@@ -257,10 +382,10 @@ const UserDetails = () => {
               {activeTab === "organizations" && (
                 <div className="space-y-6 animate-fade-in-up">
                   <div className="flex items-center gap-3 ml-1">
-                    <div className="p-2 rounded-lg bg-blue-500/10 border border-blue-500/20">
+                    <div className="p-2 rounded-lg bg-blue-500/10 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
                       <Building2 className="h-4 w-4 text-blue-500" />
                     </div>
-                    <h2 className="text-xl font-black text-foreground uppercase tracking-wider">Memberships</h2>
+                    <h2 className="text-xl font-black text-foreground uppercase tracking-widest glow-text">Network Memberships</h2>
                   </div>
                   <OrganizationList organizations={organizations || []} />
                 </div>

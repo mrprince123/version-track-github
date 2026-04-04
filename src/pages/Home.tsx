@@ -77,7 +77,7 @@ const Home = () => {
 
       <div className="flex-1 relative z-10">
         {/* ===== HERO SECTION ===== */}
-        <section className="flex items-center justify-center px-4 pt-16 pb-12 md:pt-24 md:pb-20">
+        <section className="flex items-center justify-center px-4 pt-8 pb-12 md:pt-16 md:pb-20">
           <div className="max-w-4xl w-full space-y-10">
             {/* Badge */}
             <div className="flex justify-center animate-fade-in-up">

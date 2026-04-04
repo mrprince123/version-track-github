@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { githubApi } from "@/services/github";
 import { SearchBar } from "@/components/SearchBar";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { ProfileCardSkeleton } from "@/components/ProfileCardSkeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import {
   Users,
@@ -170,7 +172,15 @@ const Compare = () => {
                   Challenger
                 </h2>
                 <SearchBar onSearch={handleSearch1} placeholder="Enter first username..." />
-                {loading1 && <LoadingSpinner />}
+                {loading1 && (
+                  <div className="glass-card rounded-xl p-4 flex items-center gap-4 border border-white/5 animate-pulse-subtle">
+                    <Skeleton className="h-14 w-14 rounded-full shrink-0" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-5 w-32" />
+                      <Skeleton className="h-4 w-20" />
+                    </div>
+                  </div>
+                )}
                 {userData1 && <BattlePlayerCard user={userData1} side="left" winner={battleResult?.winner} onNavigate={() => navigate(`/user/${userData1.login}`)} />}
               </div>
 
@@ -195,7 +205,15 @@ const Compare = () => {
                   Defender
                 </h2>
                 <SearchBar onSearch={handleSearch2} placeholder="Enter second username..." />
-                {loading2 && <LoadingSpinner />}
+                {loading2 && (
+                  <div className="glass-card rounded-xl p-4 flex items-center gap-4 border border-white/5 animate-pulse-subtle">
+                    <Skeleton className="h-14 w-14 rounded-full shrink-0" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-5 w-32" />
+                      <Skeleton className="h-4 w-20" />
+                    </div>
+                  </div>
+                )}
                 {userData2 && <BattlePlayerCard user={userData2} side="right" winner={battleResult?.winner} onNavigate={() => navigate(`/user/${userData2.login}`)} />}
               </div>
             </div>
