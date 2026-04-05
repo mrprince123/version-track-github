@@ -2,18 +2,18 @@
 
 **GitExplorer** is a modern, high-performance GitHub search and analysis engine built with **React**, **TypeScript**, and **Tailwind CSS**. It provides a premium, developer-focused experience for exploring GitHub profiles, repositories, and source code.
 
-![Homepage Hero Section](file:///Users/prince/.gemini/antigravity/brain/63bf5ed8-d25e-4b37-8048-481cbf11df74/homepage_hero_section_1775332166183.png)
+![GitExplorer Dashboard](./public/screenshots/homepage.png)
 
 ## ✨ Core Features
 
-- **🔍 Advanced Search** – Find any GitHub user with real-time suggestions and immediate profile navigation.
-- **📊 Profile Analytics** – Deep-dive into developer profiles with interactive charts, contribution metrics, and follower trends.
-- **⚔️ Battle Arena** – Compare two developers side-by-side in a gamified arena with proportional stat bars and winner metrics.
-- **📁 Code Viewer** – Browse repository files and view source code with full syntax highlighting and line numbers.
-- **📰 News Dashboard** – A centralized hub showing trending repositories, recent updates, and simulated GitHub community news.
-- **🏷️ Multi-Branch Support** – Switch between different branches and view the source tree in real-time.
-- **📥 Clone & Download** – One-click ZIP downloads and copyable SSH/HTTPS clone URLs.
-- **🛡️ Rate Limit Safe** – Built-in global error handling with a live countdown timer when hitting GitHub API limits.
+- **Advanced Search** – Find any GitHub user with real-time suggestions and immediate profile navigation.
+- **Profile Analytics** – Deep-dive into developer profiles with interactive charts, contribution metrics, and follower trends.
+- **Battle Arena** – Compare two developers side-by-side in a gamified arena with proportional stat bars and winner metrics.
+- **Code Viewer** – Browse repository files and view source code with full syntax highlighting and line numbers.
+- **News Dashboard** – A centralized hub showing trending repositories, recent updates, and simulated GitHub community news.
+- **Multi-Branch Support** – Switch between different branches and view the source tree in real-time.
+- **Clone & Download** – One-click ZIP downloads and copyable SSH/HTTPS clone URLs.
+- **Rate Limit Safe** – Built-in global error handling with a live countdown timer when hitting GitHub API limits.
 
 ## 🛠️ Technology Stack
 
@@ -57,15 +57,17 @@
 
 ## 📸 Screenshots
 
-````carousel
-![Homepage](file:///Users/prince/.gemini/antigravity/brain/63bf5ed8-d25e-4b37-8048-481cbf11df74/homepage_hero_section_1775332166183.png)
-<!-- slide -->
-![Dashboard](file:///Users/prince/.gemini/antigravity/brain/63bf5ed8-d25e-4b37-8048-481cbf11df74/dashboard_news_trending_1775332195124.png)
-<!-- slide -->
-![Compare Arena](file:///Users/prince/.gemini/antigravity/brain/63bf5ed8-d25e-4b37-8048-481cbf11df74/compare_battle_results_1775332475676.png)
-<!-- slide -->
-![Repo Details](file:///Users/prince/.gemini/antigravity/brain/63bf5ed8-d25e-4b37-8048-481cbf11df74/repo_details_torvalds_uemacs_1775330290498.png)
-````
+| Homepage | Dashboard |
+| :---: | :---: |
+| ![Homepage](./public/screenshots/homepage.png) | ![Dashboard](./public/screenshots/dashboard.png) |
+
+| Profile Analytics | Compare Arena |
+| :---: | :---: |
+| ![Profile Analytics](./public/screenshots/analytics.png) | ![Compare Arena](./public/screenshots/compare.png) |
+
+| Repository Details |
+| :---: |
+| ![Repo Details](./public/screenshots/repo.png) |
 
 ## 🛡️ License
 
