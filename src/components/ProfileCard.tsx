@@ -50,7 +50,7 @@ export const ProfileCard = ({ user, layout = "full" }: ProfileCardProps) => {
 
   if (layout === "sidebar") {
     return (
-      <div className="glass-card rounded-2xl p-6 md:p-8 gradient-border sticky top-24 shimmer group/card">
+      <div className="glass-card rounded-2xl p-6 md:p-8 gradient-border sticky top-24 group/card">
         <div className="space-y-6">
           {/* Avatar & Name */}
           <div className="flex flex-col items-center text-center space-y-4">
@@ -144,7 +144,7 @@ export const ProfileCard = ({ user, layout = "full" }: ProfileCardProps) => {
   }
 
   return (
-    <div className="glass-card rounded-2xl p-6 md:p-8 gradient-border animate-fade-in-up shimmer overflow-hidden relative group/card">
+    <div className="glass-card rounded-2xl p-6 md:p-8 gradient-border animate-fade-in-up overflow-hidden relative group/card">
       <div className="absolute top-0 right-0 p-4 opacity-10 group-hover/card:opacity-30 transition-smooth">
         <Trophy className="h-24 w-24 text-primary rotate-12" />
       </div>

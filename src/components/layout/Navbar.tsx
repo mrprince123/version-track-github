@@ -57,7 +57,7 @@ export const Navbar = () => {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "nav-glass py-2" : "bg-transparent py-4"
+        (scrolled || mobileOpen) ? "nav-glass py-2" : "bg-transparent py-4"
       }`}
     >
       <div className="container mx-auto px-4">
@@ -83,7 +83,7 @@ export const Navbar = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className={`h-8 px-3 text-[11px] font-black uppercase tracking-widest transition-smooth rounded-lg ${
+                    className={`h-8 px-3 text-sm font-semibold transition-smooth rounded-lg ${
                       isActive(link.path)
                         ? "text-primary bg-primary/10"
                         : "text-muted-foreground hover:text-foreground hover:bg-white/[0.05]"
@@ -107,10 +107,10 @@ export const Navbar = () => {
                   <input
                     ref={inputRef}
                     type="text"
-                    placeholder="Search database... (⌘K)"
+                    placeholder="Search users... (⌘K)"
                     value={quickSearch}
                     onChange={(e) => setQuickSearch(e.target.value)}
-                    className="w-48 lg:w-64 h-8 pl-10 pr-12 text-[11px] font-medium rounded-lg glass bg-white/[0.03] text-foreground border border-white/5 focus:outline-none focus:ring-1 focus:ring-primary/40 focus:bg-white/[0.08] transition-smooth placeholder:text-muted-foreground/40"
+                    className="w-48 lg:w-64 h-8 pl-10 pr-12 text-xs font-medium rounded-lg glass bg-white/[0.03] text-foreground border border-white/5 focus:outline-none focus:ring-1 focus:ring-primary/40 focus:bg-white/[0.08] transition-smooth placeholder:text-muted-foreground/50"
                   />
                 </form>
                 <div className="absolute right-2 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded border border-white/10 bg-white/5 text-[9px] font-black text-muted-foreground/40 select-none">
@@ -147,7 +147,7 @@ export const Navbar = () => {
               <Link key={link.path} to={link.path} onClick={() => setMobileOpen(false)}>
                 <Button
                   variant="ghost"
-                  className={`w-full justify-start text-[11px] font-black uppercase tracking-widest rounded-lg h-10 ${
+                  className={`w-full justify-start text-sm font-semibold rounded-lg h-10 ${
                     isActive(link.path) ? "bg-primary/10 text-primary" : "text-muted-foreground"
                   }`}
                 >

@@ -89,7 +89,7 @@ const Home = () => {
 
             {/* Title */}
             <div className="text-center space-y-5 animate-fade-in-up animation-delay-100">
-              <h1 className="text-5xl md:text-7xl font-extrabold text-foreground leading-tight tracking-tight">
+              <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-foreground leading-tight tracking-tight">
                 Discover GitHub
                 <br />
                 <span className="gradient-text animate-gradient-shift bg-[length:200%_200%]">
@@ -108,7 +108,7 @@ const Home = () => {
             </div>
 
             {/* Platform Stats */}
-            <div className="flex justify-center gap-6 md:gap-12 animate-fade-in-up animation-delay-300">
+            <div className="grid grid-cols-2 md:grid-cols-4 justify-center gap-6 md:gap-12 animate-fade-in-up animation-delay-300">
               {[
                 { value: `${repos}M+`, label: "Repositories" },
                 { value: `${devs}M+`, label: "Developers" },

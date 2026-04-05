@@ -55,7 +55,7 @@ export const RepoCard = ({ repo, username, index = 0 }: RepoCardProps) => {
   return (
     <div
       onClick={handleClick}
-      className="group glass-card rounded-2xl p-6 cursor-pointer transition-spring hover:glow-border hover:scale-[1.02] gradient-border animate-fade-in-up shimmer overflow-hidden relative"
+      className="group glass-card rounded-2xl p-6 cursor-pointer transition-spring hover:glow-border hover:scale-[1.02] gradient-border animate-fade-in-up overflow-hidden relative"
       style={{ animationDelay: `${index * 50}ms` }}
     >
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent transform -translate-x-full group-hover:translate-x-full transition-all duration-1000" />
@@ -67,7 +67,7 @@ export const RepoCard = ({ repo, username, index = 0 }: RepoCardProps) => {
             <div className="p-2 rounded-lg bg-primary/5 border border-primary/10 group-hover:bg-primary/20 group-hover:border-primary/30 transition-smooth shrink-0">
               {repo.fork ? <GitFork className="h-4 w-4 text-primary" /> : <Book className="h-4 w-4 text-primary" />}
             </div>
-            <h3 className="text-lg font-black text-foreground group-hover:glow-text transition-smooth truncate uppercase tracking-tight">
+            <h3 className="text-lg font-bold text-foreground group-hover:glow-text transition-smooth truncate tracking-tight">
               {repo.name}
             </h3>
           </div>
@@ -90,7 +90,7 @@ export const RepoCard = ({ repo, username, index = 0 }: RepoCardProps) => {
         )}
 
         {/* Footer: Language + Stats + Update */}
-        <div className="flex flex-wrap items-center gap-y-3 gap-x-6 text-[10px] text-muted-foreground uppercase tracking-widest font-black pt-2 border-t border-white/[0.05]">
+        <div className="flex flex-wrap items-center gap-y-3 gap-x-6 text-xs text-muted-foreground font-medium pt-2 border-t border-white/[0.05]">
           {repo.language && (
             <div className="flex items-center gap-2 group/lang hover:text-foreground transition-smooth">
               <Code2 className="h-3 w-3 text-primary" />

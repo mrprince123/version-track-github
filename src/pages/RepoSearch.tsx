@@ -98,20 +98,20 @@ const RepoSearch = () => {
       <div className="relative z-10 container mx-auto px-4 space-y-12">
         {/* Hero Section */}
         <div className="text-center space-y-6 max-w-4xl mx-auto animate-fade-in-up">
-          <div className="inline-flex items-center gap-2 glass rounded-full px-5 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-primary border-primary/20 shadow-glow">
+          <div className="inline-flex items-center gap-2 glass rounded-full px-5 py-2 text-xs font-semibold tracking-wide text-primary border-primary/20 shadow-glow">
             <TrendingUp className="h-3 w-3" />
-            <span>Discover Neural Nodes</span>
+            <span>Discover Repositories</span>
           </div>
-          <h1 className="text-5xl md:text-7xl font-black text-foreground tracking-tighter leading-none">
-            EXPLORE THE <span className="gradient-text glow-text">CORE</span>
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-foreground tracking-tight leading-none">
+            Explore the <span className="gradient-text glow-text">Code</span>
           </h1>
           <p className="text-muted-foreground/80 md:text-lg max-w-xl mx-auto font-medium leading-relaxed">
-            Interface with the global network of repositories. Filter by sector, language, and signal strength.
+            Search the global network of repositories. Filter by topic, language, and popularity.
           </p>
 
           {/* Search Bar */}
           <div className="max-w-2xl mx-auto pt-4">
-            <form onSubmit={handleSearch} className="flex gap-2 p-1.5 glass-strong rounded-2xl border-white/10 shadow-elevated focus-within:ring-2 focus-within:ring-primary/30 transition-smooth">
+            <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2 p-1.5 glass-strong rounded-2xl border-white/10 shadow-elevated focus-within:ring-2 focus-within:ring-primary/30 transition-smooth">
               <div className="relative flex-1 group">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-smooth" />
                 <Input
@@ -122,21 +122,23 @@ const RepoSearch = () => {
                   className="w-full h-12 pl-12 pr-4 bg-transparent border-none text-base focus-visible:ring-0 placeholder:text-muted-foreground/30 font-medium"
                 />
               </div>
-              <Button
-                type="submit"
-                className="h-12 px-8 rounded-xl gradient-primary text-white font-black uppercase tracking-widest hover:opacity-90 transition-smooth shadow-glow shrink-0"
-              >
-                Search
-              </Button>
-              <Button
-                type="button"
-                onClick={handleRandom}
-                variant="ghost"
-                className="h-12 w-12 p-0 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-muted-foreground hover:text-primary transition-smooth shrink-0"
-                title="Random Discovery"
-              >
-                <Dices className="h-5 w-5" />
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  type="submit"
+                  className="flex-1 h-12 px-8 rounded-xl gradient-primary text-white font-semibold hover:opacity-90 transition-smooth shadow-glow shrink-0"
+                >
+                  Search
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleRandom}
+                  variant="ghost"
+                  className="h-12 w-12 p-0 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-muted-foreground hover:text-primary transition-smooth shrink-0"
+                  title="Random Discovery"
+                >
+                  <Dices className="h-5 w-5" />
+                </Button>
+              </div>
             </form>
           </div>
         </div>
@@ -149,7 +151,7 @@ const RepoSearch = () => {
                 <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
                   <Zap className="h-4 w-4 text-primary" />
                 </div>
-                <h2 className="text-xl font-black text-foreground uppercase tracking-widest glow-text">Active Sectors</h2>
+                <h2 className="text-lg font-semibold text-foreground">Trending Topics</h2>
               </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -157,13 +159,13 @@ const RepoSearch = () => {
                 <button
                   key={topic.id}
                   onClick={() => handleTopicClick(topic.query)}
-                  className="group relative flex flex-col items-center justify-center p-6 glass rounded-2xl border-white/[0.05] hover:bg-white/[0.08] hover:border-primary/30 transition-spring shimmer overflow-hidden text-center"
+                  className="group relative flex flex-col items-center justify-center p-6 glass rounded-2xl border-white/[0.05] hover:bg-white/[0.08] hover:border-primary/30 transition-spring overflow-hidden text-center"
                   style={{ animationDelay: `${i * 100}ms` }}
                 >
                   <div className={`p-3 rounded-2xl bg-white/[0.03] group-hover:bg-primary/10 mb-3 transition-smooth ${topic.color}`}>
                     <topic.icon className="h-6 w-6 group-hover:scale-110 transition-spring" />
                   </div>
-                  <span className="text-[11px] font-black uppercase tracking-widest text-foreground/80 group-hover:text-primary transition-smooth">
+                  <span className="text-xs font-semibold text-foreground/80 group-hover:text-primary transition-smooth">
                     {topic.label}
                   </span>
                 </button>
@@ -174,9 +176,9 @@ const RepoSearch = () => {
 
         {/* Global Filter Bar */}
         <div className="glass rounded-2xl p-3 flex flex-wrap items-center gap-4 border-white/[0.05] sticky top-24 z-30 shadow-xl backdrop-blur-xl animate-fade-in-up">
-          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">
+          <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground ml-2">
             <SlidersHorizontal className="h-3.5 w-3.5 text-primary" />
-            <span>Signal Tuning:</span>
+            <span>Filters:</span>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -187,7 +189,7 @@ const RepoSearch = () => {
                   setLanguage(lang.value);
                   setPage(1);
                 }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-smooth border ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-smooth border ${
                   language === lang.value
                     ? "bg-primary text-white border-primary/50 shadow-glow"
                     : "bg-white/[0.03] text-muted-foreground border-white/[0.05] hover:bg-white/[0.08] hover:text-foreground"
@@ -209,7 +211,7 @@ const RepoSearch = () => {
                   setSort(opt.value);
                   setPage(1);
                 }}
-                className={`flex items-center gap-2 px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-smooth ${
+                className={`flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg transition-smooth ${
                   sort === opt.value
                     ? "bg-primary text-white shadow-sm"
                     : "text-muted-foreground hover:text-foreground hover:bg-white/[0.05]"
@@ -223,8 +225,8 @@ const RepoSearch = () => {
 
           {currentData && (
             <div className="ml-auto mr-2 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05]">
-              <span className="text-[10px] font-black text-primary uppercase tracking-widest">
-                {currentData.total_count.toLocaleString()} Signals
+              <span className="text-xs font-semibold text-primary">
+                {currentData.total_count.toLocaleString()} results
               </span>
             </div>
           )}
@@ -240,7 +242,7 @@ const RepoSearch = () => {
                   <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
                     <Star className="h-4 w-4 text-emerald-500" />
                   </div>
-                  <h2 className="text-xl font-black text-foreground uppercase tracking-widest glow-text">Top Stability Nodes</h2>
+                  <h2 className="text-xl font-semibold text-foreground">Most Starred</h2>
                 </div>
               )}
 
@@ -250,7 +252,7 @@ const RepoSearch = () => {
                     <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
                       <Search className="h-4 w-4 text-primary" />
                     </div>
-                    <h2 className="text-xl font-black text-foreground uppercase tracking-widest glow-text">Registry Results</h2>
+                    <h2 className="text-xl font-semibold text-foreground">Search Results</h2>
                   </div>
                   <Button 
                     variant="ghost" 
@@ -258,7 +260,7 @@ const RepoSearch = () => {
                       setSubmittedQuery("");
                       setSearchQuery("");
                     }}
-                    className="text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-red-400 gap-2"
+                    className="text-xs font-medium text-muted-foreground hover:text-red-400 gap-2"
                   >
                     Clear Search <X className="h-3 w-3" />
                   </Button>

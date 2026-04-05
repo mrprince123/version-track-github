@@ -52,7 +52,7 @@
     --shadow-elevated: 0 16px 48px hsl(222 47% 5% / 0.5);
 
     /* Glass */
-    --glass-bg: hsl(217 33% 17% / 0.4);
+    --glass-bg: hsl(217 33% 17% / 0.6);
     --glass-bg-strong: hsl(217 33% 17% / 0.6);
     --glass-border: hsl(217 33% 30% / 0.5);
 
@@ -141,6 +141,13 @@
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid var(--glass-border);
+  }
+  .glass-opaque {
+    background: hsl(217 33% 10% / 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   }
   .nav-glass {
     background: hsl(222 47% 7% / 0.85);

@@ -303,7 +303,7 @@ const UserDetails = () => {
                       </div>
                       
                       {/* Search & Sort Controls */}
-                      <div className="flex items-center gap-3 bg-white/[0.02] border border-white/[0.05] p-1.5 rounded-2xl flex-1 max-w-md">
+                      <div className="flex flex-col md:flex-row md:items-center gap-3 bg-white/[0.02] border border-white/[0.05] p-1.5 rounded-2xl flex-1 w-full max-w-md">
                         <div className="relative flex-1 group">
                           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground group-focus-within:text-primary transition-smooth" />
                           <Input 
@@ -321,9 +321,9 @@ const UserDetails = () => {
                             </button>
                           )}
                         </div>
-                        <div className="w-[1px] h-6 bg-white/[0.08]" />
+                        <div className="hidden md:block w-[1px] h-6 bg-white/[0.08]" />
                         <Select value={repoSort} onValueChange={setRepoSort}>
-                          <SelectTrigger className="w-[130px] bg-transparent border-none focus:ring-0 text-[10px] font-black uppercase tracking-widest h-9">
+                          <SelectTrigger className="w-full md:w-[130px] bg-transparent border-none focus:ring-0 text-[10px] font-black uppercase tracking-widest h-9">
                             <SlidersHorizontal className="h-3 w-3 mr-2 text-primary" />
                             <SelectValue placeholder="Sort" />
                           </SelectTrigger>

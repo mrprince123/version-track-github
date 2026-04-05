@@ -147,8 +147,8 @@ const Compare = () => {
         </div>
 
         {/* Quick Match Presets */}
-        <div className="flex flex-wrap justify-center gap-2 animate-fade-in-up animation-delay-100">
-          <span className="text-xs text-muted-foreground/60 self-center mr-1">Quick matches:</span>
+        <div className="flex flex-wrap justify-center items-center gap-2 animate-fade-in-up animation-delay-100">
+          <span className="text-xs text-muted-foreground/60 mr-1">Quick matches:</span>
           {QUICK_MATCHES.map((m) => (
             <button
               key={m.label}
@@ -315,7 +315,7 @@ const Compare = () => {
 
                       {/* Battle bar */}
                       <div className="flex items-center gap-3">
-                        <span className={`text-sm font-bold w-20 text-right tabular-nums ${winner === "left" ? "text-green-400" : "text-foreground"}`}>
+                        <span className={`text-[10px] sm:text-sm font-bold w-12 sm:w-20 text-right tabular-nums ${winner === "left" ? "text-green-400" : "text-foreground"}`}>
                           <AnimatedNumber value={stat.value1} delay={i * 100} />
                         </span>
 
@@ -331,7 +331,7 @@ const Compare = () => {
                           />
                         </div>
 
-                        <span className={`text-sm font-bold w-20 tabular-nums ${winner === "right" ? "text-green-400" : "text-foreground"}`}>
+                        <span className={`text-[10px] sm:text-sm font-bold w-12 sm:w-20 tabular-nums ${winner === "right" ? "text-green-400" : "text-foreground"}`}>
                           <AnimatedNumber value={stat.value2} delay={i * 100} />
                         </span>
                       </div>
