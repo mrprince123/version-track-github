@@ -24,8 +24,8 @@ export const SearchBar = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className={`flex items-center gap-3 ${className}`}>
-      <div className="relative flex-1 group">
+    <form onSubmit={handleSubmit} className={`flex flex-col md:flex-row items-center gap-3 ${className}`}>
+      <div className="relative w-full flex-1 group">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-smooth" />
         <input
           type="text"
@@ -37,7 +37,7 @@ export const SearchBar = ({
       </div>
       <button
         type="submit"
-        className="h-12 px-8 rounded-xl gradient-primary text-white hover:opacity-90 transition-smooth font-semibold text-base shadow-glow hover:shadow-glow-strong shrink-0"
+        className="w-full md:w-auto h-12 px-8 rounded-xl gradient-primary text-white hover:opacity-90 transition-smooth font-semibold text-base shadow-glow hover:shadow-glow-strong shrink-0"
       >
         {buttonLabel}
       </button>

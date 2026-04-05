@@ -79,17 +79,19 @@ const App = () => {
         <div className="flex flex-col min-h-screen">
           <BrowserRouter>
             <Navbar />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/explore" element={<RepoSearch />} />
-              <Route path="/user/:username" element={<UserDetails />} />
-              <Route path="/user/:username/repos" element={<Repositories />} />
-              <Route path="/user/:username/:repoName/detail" element={<RepoDetails />} />
-              <Route path="/code/:owner/:repo/*" element={<CodeDetails />} />
-              <Route path="/compare" element={<Compare />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <main className="flex-1 pt-[72px] md:pt-20">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/explore" element={<RepoSearch />} />
+                <Route path="/user/:username" element={<UserDetails />} />
+                <Route path="/user/:username/repos" element={<Repositories />} />
+                <Route path="/user/:username/:repoName/detail" element={<RepoDetails />} />
+                <Route path="/code/:owner/:repo/*" element={<CodeDetails />} />
+                <Route path="/compare" element={<Compare />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </main>
             <Footer />
           </BrowserRouter>
         </div>

@@ -1,5 +1,5 @@
 import { GitHubRepo } from "@/types/github";
-import { Star, GitFork, Circle } from "lucide-react";
+import { Star, GitFork, Book, Code2, Globe } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 
@@ -34,9 +34,10 @@ const LANGUAGE_COLORS: Record<string, string> = {
 interface RepoCardProps {
   repo: GitHubRepo;
   username?: string;
+  index?: number;
 }
 
-export const RepoCard = ({ repo, username }: RepoCardProps) => {
+export const RepoCard = ({ repo, username, index = 0 }: RepoCardProps) => {
   const navigate = useNavigate();
   const owner = username || repo.owner?.login || repo.full_name.split("/")[0];
 
@@ -44,54 +45,69 @@ export const RepoCard = ({ repo, username }: RepoCardProps) => {
     navigate(`/user/${owner}/${repo.name}/detail`);
   };
 
-  const langColor = repo.language ? LANGUAGE_COLORS[repo.language] || "#a78bfa" : null;
+  const langColor = repo.language ? LANGUAGE_COLORS[repo.language] || "hsl(var(--primary))" : null;
   const updatedAt = new Date(repo.updated_at).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
+    year: "numeric"
   });
 
   return (
     <div
       onClick={handleClick}
-      className="group glass-card rounded-xl p-5 cursor-pointer transition-smooth hover:shadow-glow hover:scale-[1.02] gradient-border"
+      className="group glass-card rounded-2xl p-6 cursor-pointer transition-spring hover:glow-border hover:scale-[1.02] gradient-border animate-fade-in-up overflow-hidden relative"
+      style={{ animationDelay: `${index * 50}ms` }}
     >
-      <div className="space-y-3">
-        {/* Title + Language */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent transform -translate-x-full group-hover:translate-x-full transition-all duration-1000" />
+      
+      <div className="space-y-4">
+        {/* Header: Icon + Name + Stars */}
         <div className="flex items-start justify-between gap-3">
-          <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-smooth truncate">
-            {repo.name}
-          </h3>
-          {repo.language && langColor && (
-            <Badge
-              variant="secondary"
-              className="flex items-center gap-1.5 shrink-0 bg-white/[0.05] border-white/[0.08] text-xs"
-            >
-              <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: langColor }} />
-              {repo.language}
-            </Badge>
-          )}
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="p-2 rounded-lg bg-primary/5 border border-primary/10 group-hover:bg-primary/20 group-hover:border-primary/30 transition-smooth shrink-0">
+              {repo.fork ? <GitFork className="h-4 w-4 text-primary" /> : <Book className="h-4 w-4 text-primary" />}
+            </div>
+            <h3 className="text-lg font-bold text-foreground group-hover:glow-text transition-smooth truncate tracking-tight">
+              {repo.name}
+            </h3>
+          </div>
+          
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/[0.03] border border-white/[0.05] group-hover:bg-white/[0.08] transition-smooth shrink-0">
+            <Star className="h-3.5 w-3.5 text-yellow-500 fill-yellow-500/20" />
+            <span className="text-xs font-black text-foreground">{repo.stargazers_count}</span>
+          </div>
         </div>
 
         {/* Description */}
-        {repo.description && (
-          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+        {repo.description ? (
+          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed min-h-[40px] font-medium">
             {repo.description}
+          </p>
+        ) : (
+          <p className="text-sm text-muted-foreground/30 italic min-h-[40px] font-medium">
+            No system identification provided for this node.
           </p>
         )}
 
-        {/* Stats */}
-        <div className="flex items-center gap-4 text-xs text-muted-foreground pt-1">
-          <div className="flex items-center gap-1">
-            <Star className="h-3.5 w-3.5 text-yellow-400/80" />
-            <span>{repo.stargazers_count.toLocaleString()}</span>
+        {/* Footer: Language + Stats + Update */}
+        <div className="flex flex-wrap items-center gap-y-3 gap-x-6 text-xs text-muted-foreground font-medium pt-2 border-t border-white/[0.05]">
+          {repo.language && (
+            <div className="flex items-center gap-2 group/lang hover:text-foreground transition-smooth">
+              <Code2 className="h-3 w-3 text-primary" />
+              <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: langColor || 'hsl(var(--primary))' }} />
+              {repo.language}
+            </div>
+          )}
+          
+          <div className="flex items-center gap-2 hover:text-foreground transition-smooth">
+            <GitFork className="h-3 w-3 text-blue-400" />
+            <span>{repo.forks_count} FORKS</span>
           </div>
-          <div className="flex items-center gap-1">
-            <GitFork className="h-3.5 w-3.5 text-blue-400/80" />
-            <span>{repo.forks_count.toLocaleString()}</span>
+
+          <div className="ml-auto flex items-center gap-2 text-[9px] text-muted-foreground/40 group-hover:text-muted-foreground/60 transition-smooth">
+            <Globe className="h-3 w-3" />
+            SYNCED {updatedAt}
           </div>
-          <span className="ml-auto text-muted-foreground/50">
-            Updated {updatedAt}
-          </span>
         </div>
       </div>
     </div>

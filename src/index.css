@@ -52,7 +52,7 @@
     --shadow-elevated: 0 16px 48px hsl(222 47% 5% / 0.5);
 
     /* Glass */
-    --glass-bg: hsl(217 33% 17% / 0.4);
+    --glass-bg: hsl(217 33% 17% / 0.6);
     --glass-bg-strong: hsl(217 33% 17% / 0.6);
     --glass-border: hsl(217 33% 30% / 0.5);
 
@@ -142,12 +142,78 @@
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid var(--glass-border);
   }
+  .glass-opaque {
+    background: hsl(217 33% 10% / 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+  .nav-glass {
+    background: hsl(222 47% 7% / 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+  }
   .glass-card {
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
     box-shadow: var(--shadow-card);
+  }
+
+  /* Shimmer effect */
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+    background: hsl(var(--foreground) / 0.05); /* Base color for skeletons */
+  }
+  .shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(var(--primary) / 0.15),
+      transparent
+    );
+    transform: translateX(-100%);
+    animation: shimmer 1.5s infinite ease-out;
+  }
+
+  .animate-pulse-subtle {
+    animation: pulse-subtle 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse-subtle {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 0.3; }
+  }
+
+  /* Badge Interactive */
+  .badge-interactive {
+    @apply px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-full transition-all duration-300 cursor-pointer;
+    background: hsl(var(--primary) / 0.05);
+    border: 1px solid hsl(var(--primary) / 0.1);
+    color: hsl(var(--primary));
+  }
+  .badge-interactive:hover {
+    @apply scale-105;
+    background: hsl(var(--primary) / 0.15);
+    border-color: hsl(var(--primary) / 0.3);
+    box-shadow: 0 0 15px hsl(var(--primary) / 0.2);
+  }
+
+  /* Glow effects */
+  .glow-text {
+    text-shadow: 0 0 12px hsl(var(--primary) / 0.4);
+  }
+  .glow-border {
+    border-color: hsl(var(--primary) / 0.4);
+    box-shadow: 0 0 12px hsl(var(--primary) / 0.2);
   }
 
   /* Transitions */

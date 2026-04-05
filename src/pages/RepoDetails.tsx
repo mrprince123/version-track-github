@@ -138,13 +138,20 @@ export const RepoDetails = () => {
         </button>
 
         {/* Repository Header */}
-        <div className="glass-card rounded-xl p-6 md:p-8 gradient-border animate-fade-in-up space-y-4">
-          <div className="flex items-start justify-between gap-4 flex-wrap">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-foreground">{name}</h1>
-              {description && (
-                <p className="text-muted-foreground mt-2 max-w-3xl leading-relaxed">{description}</p>
-              )}
+        <div className="glass-card rounded-xl p-5 md:p-6 gradient-border animate-fade-in-up">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div className="flex items-center gap-3 min-w-0">
+              <h1 className="text-xl md:text-2xl font-bold text-foreground truncate">{name}</h1>
+              <div className="hidden sm:flex items-center gap-3 text-sm text-muted-foreground shrink-0">
+                <span className="flex items-center gap-1">
+                  <Star className="h-3.5 w-3.5 text-yellow-400" />
+                  {stargazers_count?.toLocaleString()}
+                </span>
+                <span className="flex items-center gap-1">
+                  <GitFork className="h-3.5 w-3.5 text-blue-400" />
+                  {forks_count?.toLocaleString()}
+                </span>
+              </div>
             </div>
             <a
               href={html_url}
@@ -155,38 +162,20 @@ export const RepoDetails = () => {
               View on GitHub <ExternalLink className="h-3.5 w-3.5" />
             </a>
           </div>
-
-          {/* Stats Row */}
-          <div className="flex flex-wrap items-center gap-5 text-sm text-muted-foreground">
-            <div className="flex items-center gap-1.5">
-              <Star className="h-4 w-4 text-yellow-400" />
-              <span className="text-foreground font-medium">{stargazers_count?.toLocaleString()}</span> stars
-            </div>
-            <div className="flex items-center gap-1.5">
-              <GitFork className="h-4 w-4 text-blue-400" />
-              <span className="text-foreground font-medium">{forks_count?.toLocaleString()}</span> forks
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Eye className="h-4 w-4 text-green-400" />
-              <span className="text-foreground font-medium">{watchers_count?.toLocaleString()}</span> watchers
-            </div>
-            <div className="flex items-center gap-1.5">
-              <AlertCircle className="h-4 w-4 text-orange-400" />
-              <span className="text-foreground font-medium">{open_issues_count?.toLocaleString()}</span> issues
-            </div>
-            {contributors && (
-              <div className="flex items-center gap-1.5">
-                <Users className="h-4 w-4 text-purple-400" />
-                <span className="text-foreground font-medium">{contributors.length}</span> contributors
-              </div>
-            )}
-          </div>
         </div>
 
         {/* Branches + Clone/Download Row */}
-        <div className="flex flex-wrap gap-3 animate-fade-in-up animation-delay-100">
+        <div className="relative z-20 flex flex-wrap gap-3 animate-fade-in-up animation-delay-100">
+          {/* Click-away overlay for dropdowns — inside the same stacking context */}
+          {(showBranches || showCloneMenu) && (
+            <div
+              className="fixed inset-0 z-10"
+              onClick={() => { setShowBranches(false); setShowCloneMenu(false); }}
+            />
+          )}
+
           {/* Branch Selector */}
-          <div className="relative">
+          <div className="relative z-20">
             <button
               onClick={() => { setShowBranches(!showBranches); setShowCloneMenu(false); }}
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl glass text-sm text-foreground hover:bg-white/[0.05] transition-smooth"
@@ -198,14 +187,14 @@ export const RepoDetails = () => {
             </button>
 
             {showBranches && branches && branches.length > 0 && (
-              <div className="absolute top-full left-0 mt-2 w-64 max-h-72 overflow-y-auto glass-card rounded-xl border border-white/[0.08] shadow-2xl z-50">
+              <div className="absolute top-full left-0 mt-2 w-64 max-h-72 overflow-y-auto glass-opaque rounded-xl border border-white/[0.08] shadow-2xl z-30">
                 <div className="px-3 py-2 border-b border-white/[0.06] text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   Branches ({branches.length})
                 </div>
                 {branches.map((b) => (
                   <button
                     key={b.name}
-                    onClick={() => setShowBranches(false)}
+                    onClick={(e) => { e.stopPropagation(); setShowBranches(false); }}
                     className={`w-full px-3 py-2 text-left text-sm flex items-center gap-2 hover:bg-white/[0.04] transition-smooth ${
                       b.name === branch ? "text-primary bg-primary/5" : "text-foreground"
                     }`}
@@ -222,7 +211,7 @@ export const RepoDetails = () => {
           </div>
 
           {/* Clone/Download Button */}
-          <div className="relative ml-auto">
+          <div className="relative z-20 ml-auto">
             <button
               onClick={() => { setShowCloneMenu(!showCloneMenu); setShowBranches(false); }}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl gradient-primary text-white text-sm font-semibold hover:opacity-90 transition-smooth shadow-glow"
@@ -233,7 +222,10 @@ export const RepoDetails = () => {
             </button>
 
             {showCloneMenu && (
-              <div className="absolute top-full right-0 mt-2 w-80 glass-card rounded-xl border border-white/[0.08] shadow-2xl z-50 overflow-hidden">
+              <div
+                className="absolute top-full right-0 mt-2 w-80 glass-opaque rounded-xl border border-white/[0.08] shadow-2xl z-30 overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
                 {/* Clone section */}
                 <div className="p-4 space-y-3">
                   <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
@@ -313,139 +305,188 @@ export const RepoDetails = () => {
           </div>
         </div>
 
-        {/* Language Bar */}
-        {languages && langTotal > 0 && (
-          <div className="glass-card rounded-xl p-5 gradient-border animate-fade-in-up animation-delay-100 space-y-3">
-            <h2 className="text-base font-semibold text-foreground">Languages</h2>
-            <div className="flex rounded-full overflow-hidden h-2.5">
-              {Object.entries(languages as Record<string, number>).map(([lang, bytes]) => (
-                <div
-                  key={lang}
-                  style={{ width: `${(bytes / langTotal) * 100}%`, backgroundColor: LANGUAGE_COLORS[lang] || "#a78bfa" }}
-                  title={`${lang}: ${((bytes / langTotal) * 100).toFixed(1)}%`}
-                />
-              ))}
-            </div>
-            <div className="flex flex-wrap gap-x-4 gap-y-1.5">
-              {Object.entries(languages as Record<string, number>).map(([lang, bytes]) => (
-                <div key={lang} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: LANGUAGE_COLORS[lang] || "#a78bfa" }} />
-                  <span className="text-foreground font-medium">{lang}</span>
-                  <span>{((bytes / langTotal) * 100).toFixed(1)}%</span>
+        {/* ===== MAIN 2-COLUMN LAYOUT ===== */}
+        <div className="grid lg:grid-cols-[1fr,340px] gap-6 animate-fade-in-up animation-delay-200">
+
+          {/* ===== LEFT COLUMN: File Tree (70%) ===== */}
+          <div className="min-w-0">
+            {displayContents && displayContents.length > 0 && (
+              <div className="glass-card rounded-xl overflow-hidden gradient-border">
+                {/* Breadcrumb */}
+                <div className="px-5 py-3 border-b border-white/[0.06] flex items-center gap-1 text-sm flex-wrap">
+                  <button
+                    onClick={() => setCurrentPath("")}
+                    className={`hover:text-primary transition-smooth ${!currentPath ? "text-foreground font-medium" : "text-muted-foreground"}`}
+                  >
+                    {repoName}
+                  </button>
+                  {pathSegments.map((seg, i) => {
+                    const fullPath = pathSegments.slice(0, i + 1).join("/");
+                    const isLast = i === pathSegments.length - 1;
+                    return (
+                      <span key={fullPath} className="flex items-center gap-1">
+                        <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/50" />
+                        <button
+                          onClick={() => setCurrentPath(fullPath)}
+                          className={`hover:text-primary transition-smooth ${isLast ? "text-foreground font-medium" : "text-muted-foreground"}`}
+                        >
+                          {seg}
+                        </button>
+                      </span>
+                    );
+                  })}
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
 
-        {/* Contributors */}
-        {contributors && contributors.length > 0 && (
-          <div className="glass-card rounded-xl p-5 gradient-border animate-fade-in-up animation-delay-200 space-y-4">
-            <h2 className="text-base font-semibold text-foreground">Top Contributors</h2>
-            <div className="flex flex-wrap gap-3">
-              {contributors.slice(0, 10).map((contrib: any) => (
-                <a
-                  key={contrib.id}
-                  href={contrib.html_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex flex-col items-center w-16 group"
-                >
-                  <img
-                    src={contrib.avatar_url}
-                    alt={contrib.login}
-                    className="w-10 h-10 rounded-full ring-1 ring-white/10 group-hover:ring-primary/50 transition-smooth"
-                  />
-                  <span className="text-[10px] text-center mt-1 text-muted-foreground truncate w-full group-hover:text-primary transition-smooth">
-                    {contrib.login}
-                  </span>
-                </a>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* File Tree */}
-        {displayContents && displayContents.length > 0 && (
-          <div className="glass-card rounded-xl overflow-hidden gradient-border animate-fade-in-up animation-delay-300">
-            {/* Breadcrumb */}
-            <div className="px-5 py-3 border-b border-white/[0.06] flex items-center gap-1 text-sm flex-wrap">
-              <button
-                onClick={() => setCurrentPath("")}
-                className={`hover:text-primary transition-smooth ${!currentPath ? "text-foreground font-medium" : "text-muted-foreground"}`}
-              >
-                {repoName}
-              </button>
-              {pathSegments.map((seg, i) => {
-                const fullPath = pathSegments.slice(0, i + 1).join("/");
-                const isLast = i === pathSegments.length - 1;
-                return (
-                  <span key={fullPath} className="flex items-center gap-1">
-                    <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/50" />
-                    <button
-                      onClick={() => setCurrentPath(fullPath)}
-                      className={`hover:text-primary transition-smooth ${isLast ? "text-foreground font-medium" : "text-muted-foreground"}`}
-                    >
-                      {seg}
-                    </button>
-                  </span>
-                );
-              })}
-            </div>
-
-            {/* File list */}
-            {contentsLoading ? (
-              <div className="p-8"><LoadingSpinner /></div>
-            ) : (
-              <ul>
-                {currentPath && (
-                  <li>
-                    <button
-                      onClick={() => {
-                        const parent = currentPath.split("/").slice(0, -1).join("/");
-                        setCurrentPath(parent);
-                      }}
-                      className="w-full px-5 py-2.5 flex items-center gap-3 text-sm text-muted-foreground hover:bg-white/[0.03] transition-smooth border-b border-white/[0.04]"
-                    >
-                      <Folder className="h-4 w-4 text-blue-400/70" />
-                      <span>..</span>
-                    </button>
-                  </li>
-                )}
-                {(displayContents || []).map((item: any) => (
-                  <li key={item.sha}>
-                    <button
-                      onClick={() => handleFileClick(item)}
-                      className="w-full px-5 py-2.5 flex items-center justify-between text-sm hover:bg-white/[0.03] transition-smooth border-b border-white/[0.04] last:border-b-0 group"
-                    >
-                      <div className="flex items-center gap-3">
-                        {item.type === "dir" ? (
+                {/* File list */}
+                {contentsLoading ? (
+                  <div className="p-8"><LoadingSpinner /></div>
+                ) : (
+                  <ul>
+                    {currentPath && (
+                      <li>
+                        <button
+                          onClick={() => {
+                            const parent = currentPath.split("/").slice(0, -1).join("/");
+                            setCurrentPath(parent);
+                          }}
+                          className="w-full px-5 py-2.5 flex items-center gap-3 text-sm text-muted-foreground hover:bg-white/[0.03] transition-smooth border-b border-white/[0.04]"
+                        >
                           <Folder className="h-4 w-4 text-blue-400/70" />
-                        ) : (
-                          <File className="h-4 w-4 text-muted-foreground/70" />
-                        )}
-                        <span className="text-foreground group-hover:text-primary transition-smooth">
-                          {item.name}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {item.type === "dir" ? (
-                          <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/40" />
-                        ) : (
-                          <span className="text-xs text-muted-foreground/40">
-                            {item.size > 1024 ? `${(item.size / 1024).toFixed(1)} KB` : `${item.size} B`}
-                          </span>
-                        )}
-                      </div>
-                    </button>
-                  </li>
-                ))}
-              </ul>
+                          <span>..</span>
+                        </button>
+                      </li>
+                    )}
+                    {(displayContents || []).map((item: any) => (
+                      <li key={item.sha}>
+                        <button
+                          onClick={() => handleFileClick(item)}
+                          className="w-full px-5 py-2.5 flex items-center justify-between text-sm hover:bg-white/[0.03] transition-smooth border-b border-white/[0.04] last:border-b-0 group"
+                        >
+                          <div className="flex items-center gap-3">
+                            {item.type === "dir" ? (
+                              <Folder className="h-4 w-4 text-blue-400/70" />
+                            ) : (
+                              <File className="h-4 w-4 text-muted-foreground/70" />
+                            )}
+                            <span className="text-foreground group-hover:text-primary transition-smooth">
+                              {item.name}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {item.type === "dir" ? (
+                              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/40" />
+                            ) : (
+                              <span className="text-xs text-muted-foreground/40">
+                                {item.size > 1024 ? `${(item.size / 1024).toFixed(1)} KB` : `${item.size} B`}
+                              </span>
+                            )}
+                          </div>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             )}
           </div>
-        )}
 
-        {/* README Markdown Preview */}
+          {/* ===== RIGHT COLUMN: Sidebar (30%) ===== */}
+          <div className="space-y-5">
+            {/* About */}
+            <div className="glass-card rounded-xl p-5 gradient-border space-y-4">
+              <h2 className="text-base font-semibold text-foreground">About</h2>
+              {description ? (
+                <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+              ) : (
+                <p className="text-sm text-muted-foreground/50 italic">No description provided.</p>
+              )}
+
+              {/* Quick stats */}
+              <div className="flex flex-wrap gap-x-4 gap-y-2 pt-2 border-t border-white/[0.06]">
+                <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                  <Star className="h-4 w-4 text-yellow-400" />
+                  <span className="text-foreground font-medium">{stargazers_count?.toLocaleString()}</span>
+                  <span>stars</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                  <GitFork className="h-4 w-4 text-blue-400" />
+                  <span className="text-foreground font-medium">{forks_count?.toLocaleString()}</span>
+                  <span>forks</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                  <Eye className="h-4 w-4 text-green-400" />
+                  <span className="text-foreground font-medium">{watchers_count?.toLocaleString()}</span>
+                  <span>watching</span>
+                </div>
+              </div>
+
+              {/* External link */}
+              <a
+                href={html_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm text-primary hover:underline"
+              >
+                View on GitHub <ExternalLink className="h-3.5 w-3.5" />
+              </a>
+            </div>
+
+            {/* Languages */}
+            {languages && langTotal > 0 && (
+              <div className="glass-card rounded-xl p-5 gradient-border space-y-3">
+                <h2 className="text-base font-semibold text-foreground">Languages</h2>
+                <div className="flex rounded-full overflow-hidden h-2">
+                  {Object.entries(languages as Record<string, number>).map(([lang, bytes]) => (
+                    <div
+                      key={lang}
+                      style={{ width: `${(bytes / langTotal) * 100}%`, backgroundColor: LANGUAGE_COLORS[lang] || "#a78bfa" }}
+                      title={`${lang}: ${((bytes / langTotal) * 100).toFixed(1)}%`}
+                    />
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-x-3 gap-y-1.5">
+                  {Object.entries(languages as Record<string, number>).map(([lang, bytes]) => (
+                    <div key={lang} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <span className="h-2 w-2 rounded-full" style={{ backgroundColor: LANGUAGE_COLORS[lang] || "#a78bfa" }} />
+                      <span className="text-foreground font-medium">{lang}</span>
+                      <span>{((bytes / langTotal) * 100).toFixed(1)}%</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Contributors */}
+            {contributors && contributors.length > 0 && (
+              <div className="glass-card rounded-xl p-5 gradient-border space-y-4">
+                <h2 className="text-base font-semibold text-foreground">
+                  Contributors
+                  <span className="ml-2 text-xs text-muted-foreground font-normal">({contributors.length})</span>
+                </h2>
+                <div className="flex flex-wrap gap-2">
+                  {contributors.slice(0, 12).map((contrib: any) => (
+                    <a
+                      key={contrib.id}
+                      href={contrib.html_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={contrib.login}
+                      className="group"
+                    >
+                      <img
+                        src={contrib.avatar_url}
+                        alt={contrib.login}
+                        className="w-9 h-9 rounded-full ring-1 ring-white/10 group-hover:ring-primary/50 transition-smooth"
+                      />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ===== FULL-WIDTH README ===== */}
         {readme && (
           <div className="glass-card rounded-xl overflow-hidden gradient-border animate-fade-in-up">
             <div className="px-5 py-3 border-b border-white/[0.06] flex items-center gap-2 text-sm">
@@ -459,13 +500,7 @@ export const RepoDetails = () => {
         )}
       </div>
 
-      {/* Click-away overlay for dropdowns */}
-      {(showBranches || showCloneMenu) && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => { setShowBranches(false); setShowCloneMenu(false); }}
-        />
-      )}
+
     </div>
   );
 };

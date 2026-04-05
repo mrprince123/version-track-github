@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { githubApi } from "@/services/github";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { Skeleton } from "@/components/ui/skeleton";
+import { RepoCardSkeleton } from "@/components/RepoCardSkeleton";
 import {
   TrendingUp,
   Star,
@@ -122,7 +124,7 @@ const Dashboard = () => {
     <div className="min-h-[calc(100vh-73px)] relative">
       <AnimatedBackground />
 
-      <div className="relative z-10 container mx-auto px-4 py-8 space-y-8">
+      <div className="relative z-10 container mx-auto px-4 py-8 space-y-8 w-full overflow-hidden">
         {/* Dashboard Header */}
         <div className="animate-fade-in-up">
           <div className="flex items-center gap-3 mb-2">
@@ -136,9 +138,9 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-6 min-w-0 w-full overflow-hidden">
           {/* ===== LEFT COLUMN: News Feed ===== */}
-          <div className="lg:col-span-1 space-y-4 animate-fade-in-up animation-delay-100">
+          <div className="lg:col-span-1 space-y-4 animate-fade-in-up animation-delay-100 min-w-0">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
                 <Newspaper className="h-4 w-4 text-primary" />
@@ -160,7 +162,7 @@ const Dashboard = () => {
                       <item.icon className={`h-4 w-4 ${item.iconColor}`} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-smooth leading-snug">
+                      <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-smooth leading-snug break-words">
                         {item.title}
                       </h3>
                       <p className="text-xs text-muted-foreground mt-1 leading-relaxed line-clamp-2">
@@ -188,7 +190,7 @@ const Dashboard = () => {
           </div>
 
           {/* ===== RIGHT COLUMN: Trending + Recent ===== */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-6 min-w-0">
             {/* Trending Repos */}
             <div className="space-y-4 animate-fade-in-up animation-delay-200">
               <div className="flex items-center justify-between flex-wrap gap-3">
@@ -196,12 +198,12 @@ const Dashboard = () => {
                   <Flame className="h-5 w-5 text-orange-400" />
                   Trending Repositories
                 </h2>
-                <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap overflow-x-auto no-scrollbar pb-1 -mb-1">
                   {LANGUAGES.slice(0, 6).map((lang) => (
                     <button
                       key={lang}
                       onClick={() => setSelectedLanguage(lang)}
-                      className={`px-3 py-1 text-xs rounded-full transition-smooth ${
+                      className={`px-3 py-1 text-xs rounded-full transition-smooth shrink-0 ${
                         selectedLanguage === lang
                           ? "bg-primary/20 text-primary font-medium"
                           : "glass text-muted-foreground hover:text-foreground"
@@ -214,9 +216,13 @@ const Dashboard = () => {
               </div>
 
               {trendingLoading ? (
-                <LoadingSpinner />
-              ) : (
                 <div className="grid sm:grid-cols-2 gap-4">
+                  {[...Array(6)].map((_, i) => (
+                    <RepoCardSkeleton key={i} index={i} />
+                  ))}
+                </div>
+              ) : (
+                <div className="grid sm:grid-cols-2 gap-4 min-w-0">
                   {trendingRepos?.items?.slice(0, 6).map((repo) => (
                     <button
                       key={repo.id}
@@ -276,14 +282,25 @@ const Dashboard = () => {
               </h2>
 
               {recentLoading ? (
-                <LoadingSpinner />
+                <div className="space-y-3">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="w-full glass-card rounded-xl p-4 flex items-center gap-4 border border-white/5">
+                      <Skeleton className="h-10 w-10 rounded-full shrink-0" />
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-4 w-1/3" />
+                        <Skeleton className="h-3 w-1/2" />
+                      </div>
+                      <Skeleton className="h-14 w-14 rounded-lg shrink-0 ml-auto hidden sm:block" />
+                    </div>
+                  ))}
+                </div>
               ) : (
                 <div className="space-y-3">
                   {recentRepos?.items?.slice(0, 5).map((repo) => (
                     <button
                       key={repo.id}
                       onClick={() => navigate(`/user/${repo.owner.login}/${repo.name}/detail`)}
-                      className="w-full glass-card rounded-xl p-4 text-left transition-smooth hover:shadow-glow gradient-border group flex items-center gap-4"
+                      className="w-full glass-card rounded-xl p-4 text-left transition-smooth hover:shadow-glow gradient-border group flex flex-col sm:flex-row sm:items-center gap-4"
                     >
                       <img
                         src={repo.owner.avatar_url}
@@ -302,18 +319,20 @@ const Dashboard = () => {
                           {repo.description || "No description"}
                         </p>
                       </div>
-                      <div className="flex items-center gap-3 shrink-0">
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <Star className="h-3 w-3 text-yellow-400" />
-                          {repo.stargazers_count >= 1000
-                            ? `${(repo.stargazers_count / 1000).toFixed(1)}k`
-                            : repo.stargazers_count}
-                        </div>
-                        <div className="text-xs text-muted-foreground/50">
-                          {new Date(repo.updated_at).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                          })}
+                      <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto mt-2 sm:mt-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/5">
+                        <div className="flex items-center gap-3 shrink-0">
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <Star className="h-3 w-3 text-yellow-400" />
+                            {repo.stargazers_count >= 1000
+                              ? `${(repo.stargazers_count / 1000).toFixed(1)}k`
+                              : repo.stargazers_count}
+                          </div>
+                          <div className="text-xs text-muted-foreground/50">
+                            {new Date(repo.updated_at).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                            })}
+                          </div>
                         </div>
                         <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-primary transition-smooth" />
                       </div>

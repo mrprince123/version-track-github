@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { githubApi } from "@/services/github";
 import { SearchBar } from "@/components/SearchBar";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { ProfileCardSkeleton } from "@/components/ProfileCardSkeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import {
   Users,
@@ -145,8 +147,8 @@ const Compare = () => {
         </div>
 
         {/* Quick Match Presets */}
-        <div className="flex flex-wrap justify-center gap-2 animate-fade-in-up animation-delay-100">
-          <span className="text-xs text-muted-foreground/60 self-center mr-1">Quick matches:</span>
+        <div className="flex flex-wrap justify-center items-center gap-2 animate-fade-in-up animation-delay-100">
+          <span className="text-xs text-muted-foreground/60 mr-1">Quick matches:</span>
           {QUICK_MATCHES.map((m) => (
             <button
               key={m.label}
@@ -170,7 +172,15 @@ const Compare = () => {
                   Challenger
                 </h2>
                 <SearchBar onSearch={handleSearch1} placeholder="Enter first username..." />
-                {loading1 && <LoadingSpinner />}
+                {loading1 && (
+                  <div className="glass-card rounded-xl p-4 flex items-center gap-4 border border-white/5 animate-pulse-subtle">
+                    <Skeleton className="h-14 w-14 rounded-full shrink-0" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-5 w-32" />
+                      <Skeleton className="h-4 w-20" />
+                    </div>
+                  </div>
+                )}
                 {userData1 && <BattlePlayerCard user={userData1} side="left" winner={battleResult?.winner} onNavigate={() => navigate(`/user/${userData1.login}`)} />}
               </div>
 
@@ -195,7 +205,15 @@ const Compare = () => {
                   Defender
                 </h2>
                 <SearchBar onSearch={handleSearch2} placeholder="Enter second username..." />
-                {loading2 && <LoadingSpinner />}
+                {loading2 && (
+                  <div className="glass-card rounded-xl p-4 flex items-center gap-4 border border-white/5 animate-pulse-subtle">
+                    <Skeleton className="h-14 w-14 rounded-full shrink-0" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-5 w-32" />
+                      <Skeleton className="h-4 w-20" />
+                    </div>
+                  </div>
+                )}
                 {userData2 && <BattlePlayerCard user={userData2} side="right" winner={battleResult?.winner} onNavigate={() => navigate(`/user/${userData2.login}`)} />}
               </div>
             </div>
@@ -297,7 +315,7 @@ const Compare = () => {
 
                       {/* Battle bar */}
                       <div className="flex items-center gap-3">
-                        <span className={`text-sm font-bold w-20 text-right tabular-nums ${winner === "left" ? "text-green-400" : "text-foreground"}`}>
+                        <span className={`text-[10px] sm:text-sm font-bold w-12 sm:w-20 text-right tabular-nums ${winner === "left" ? "text-green-400" : "text-foreground"}`}>
                           <AnimatedNumber value={stat.value1} delay={i * 100} />
                         </span>
 
@@ -313,7 +331,7 @@ const Compare = () => {
                           />
                         </div>
 
-                        <span className={`text-sm font-bold w-20 tabular-nums ${winner === "right" ? "text-green-400" : "text-foreground"}`}>
+                        <span className={`text-[10px] sm:text-sm font-bold w-12 sm:w-20 tabular-nums ${winner === "right" ? "text-green-400" : "text-foreground"}`}>
                           <AnimatedNumber value={stat.value2} delay={i * 100} />
                         </span>
                       </div>

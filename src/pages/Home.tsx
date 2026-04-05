@@ -77,7 +77,7 @@ const Home = () => {
 
       <div className="flex-1 relative z-10">
         {/* ===== HERO SECTION ===== */}
-        <section className="flex items-center justify-center px-4 pt-16 pb-12 md:pt-24 md:pb-20">
+        <section className="flex items-center justify-center px-4 pt-8 pb-12 md:pt-16 md:pb-20">
           <div className="max-w-4xl w-full space-y-10">
             {/* Badge */}
             <div className="flex justify-center animate-fade-in-up">
@@ -89,7 +89,7 @@ const Home = () => {
 
             {/* Title */}
             <div className="text-center space-y-5 animate-fade-in-up animation-delay-100">
-              <h1 className="text-5xl md:text-7xl font-extrabold text-foreground leading-tight tracking-tight">
+              <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-foreground leading-tight tracking-tight">
                 Discover GitHub
                 <br />
                 <span className="gradient-text animate-gradient-shift bg-[length:200%_200%]">
@@ -108,7 +108,7 @@ const Home = () => {
             </div>
 
             {/* Platform Stats */}
-            <div className="flex justify-center gap-6 md:gap-12 animate-fade-in-up animation-delay-300">
+            <div className="grid grid-cols-2 md:grid-cols-4 justify-center gap-6 md:gap-12 animate-fade-in-up animation-delay-300">
               {[
                 { value: `${repos}M+`, label: "Repositories" },
                 { value: `${devs}M+`, label: "Developers" },

@@ -1,4 +1,13 @@
-import { GitHubUser, GitHubRepo, LanguageStats, GitHubSearchResult, GitHubContent, GitHubBranch } from "@/types/github";
+import {
+  GitHubUser,
+  GitHubRepo,
+  LanguageStats,
+  GitHubSearchResult,
+  GitHubContent,
+  GitHubBranch,
+  GitHubEvent,
+  GitHubOrg,
+} from "@/types/github";
 
 const GITHUB_API_BASE = "https://api.github.com";
 
@@ -229,5 +238,19 @@ export const githubApi = {
       contributors: contributors || [],
       languages: languages || {},
     };
+  },
+
+  async getUserEvents(username: string): Promise<GitHubEvent[]> {
+    const data = await safeFetch<GitHubEvent[]>(
+      `${GITHUB_API_BASE}/users/${username}/events/public?per_page=20`
+    );
+    return data || [];
+  },
+
+  async getUserOrgs(username: string): Promise<GitHubOrg[]> {
+    const data = await safeFetch<GitHubOrg[]>(
+      `${GITHUB_API_BASE}/users/${username}/orgs`
+    );
+    return data || [];
   },
 };
